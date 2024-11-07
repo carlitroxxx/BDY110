@@ -134,5 +134,8 @@ alter table cliente
 alter table empleado
     add constraint fk_empleado_comuna foreign key (id_comuna)
         references comuna(id_comuna);
+alter table cliente 
+    add constraint fk_cliente_estado_civil foreign key (id_estado_civil)
+        references estado_civil(id_estado_civil);
 
 
