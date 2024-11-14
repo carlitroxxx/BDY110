@@ -30,5 +30,5 @@ select seq_civil.nextval from dual;
 select seq_civil.currval from dual;
 insert into estado_civil values(seq_civil.nextval,'Soltero');
 /*
-Crear secuencia para tipo de cliente
+Crear secuencia para tipo de salud
 */
