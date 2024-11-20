@@ -1,0 +1,309 @@
+
+-- SCRIPT BASE
+DROP TABLE arriendo_camion;
+DROP TABLE cliente;
+DROP TABLE camion;
+DROP TABLE empleado;
+DROP TABLE comuna;
+DROP TABLE estado_civil;
+DROP TABLE marca;
+DROP TABLE tipo_camion;
+DROP TABLE tipo_cliente;
+DROP TABLE tipo_salud;
+
+drop SEQUENCE SEQ_ESTCIVIL;
+DROP SEQUENCE SEQ_TSALUD;
+DROP SEQUENCE SEQ_TCLIENTE;
+CREATE TABLE arriendo_camion (
+    id_arriendo        NUMBER(7) NOT NULL,
+    nro_patente        VARCHAR2(6) NOT NULL,
+    numrun_cli         NUMBER(10) NOT NULL,
+    fecha_ini_arriendo DATE,
+    dias_solicitados   NUMBER(6),
+    fecha_devolucion   DATE);
+
+ALTER TABLE arriendo_camion ADD CONSTRAINT pk_arriendo_camion PRIMARY KEY ( id_arriendo );
+
+CREATE TABLE camion (
+    nro_patente        VARCHAR2(6),
+    color              VARCHAR2(15) NOT NULL,
+    motor              VARCHAR2(5) NOT NULL,
+    anio               NUMBER(4),
+    valor_arriendo_dia NUMBER(7) NOT NULL,
+    valor_garantia_dia NUMBER(6),
+    id_tipo_camion     VARCHAR2(1) NOT NULL,
+    numrun_emp         NUMBER(10),
+    id_marca           NUMBER(2) NOT NULL
+);
+
+CREATE TABLE cliente (
+    numrun_cli      NUMBER(10) NOT NULL,
+    dvrun_cli       VARCHAR2(1) NOT NULL,
+    appaterno_cli   VARCHAR2(30) NOT NULL,
+    apmaterno_cli   VARCHAR2(30) NOT NULL,
+    pnombre_cli     VARCHAR2(30) NOT NULL,
+    snombre_cli     VARCHAR2(30),
+    direccion       VARCHAR2(60) NOT NULL,
+    celular_cli     NUMBER(15),
+    fono_fijo_cli   NUMBER(15),
+    renta           NUMBER(7) NOT NULL,
+    fecha_nac_cli   DATE,
+    id_comuna       NUMBER(3),
+    id_tipo_cli     VARCHAR2(1) NOT NULL,
+    id_estado_civil NUMBER(2) NOT NULL
+);
+
+ALTER TABLE cliente ADD CONSTRAINT pk_cliente PRIMARY KEY ( numrun_cli );
+
+CREATE TABLE comuna (
+    id_comuna     NUMBER(3) NOT NULL,
+    nombre_comuna VARCHAR2(30) NOT NULL
+);
+
+ALTER TABLE comuna ADD CONSTRAINT pk_comuna PRIMARY KEY ( id_comuna );
+
+ALTER TABLE comuna ADD CONSTRAINT un_comuna_nomcomuna UNIQUE ( nombre_comuna );
+
+CREATE TABLE empleado (
+    numrun_emp      NUMBER(10),
+    dvrun_emp       VARCHAR2(1) NOT NULL,
+    appaterno_emp   VARCHAR2(30) NOT NULL,
+    apmaterno_emp   VARCHAR2(30) NOT NULL,
+    pnombre_emp     VARCHAR2(25),
+    snombre_emp     VARCHAR2(25) NOT NULL,
+    direccion_emp   VARCHAR2(60) NOT NULL,
+    sexo            CHAR(1) NOT NULL,
+    celular_emp     NUMBER(15),
+    fono_fijo_emp   NUMBER(15),
+    fecha_nac       DATE NOT NULL,
+    fecha_contrato  DATE NOT NULL,
+    sueldo_base     NUMBER(7) NOT NULL,
+    id_comuna       NUMBER(3),
+    id_tipo_sal     VARCHAR2(3) NOT NULL,
+    id_estado_civil NUMBER(2) NOT NULL
+);
+
+CREATE TABLE estado_civil (
+    id_estado_civil     NUMBER(2) NOT NULL,
+    nombre_estado_civil VARCHAR2(25) NOT NULL
+);
+
+ALTER TABLE estado_civil ADD CONSTRAINT estado_civil_pk PRIMARY KEY ( id_estado_civil );
+
+CREATE TABLE marca (
+    id_marca     NUMBER(2) NOT NULL,
+    nombre_marca VARCHAR2(20) NOT NULL
+);
+
+ALTER TABLE marca ADD CONSTRAINT pk_marca PRIMARY KEY ( id_marca );
+
+CREATE TABLE tipo_camion (
+    id_tipo_camion     VARCHAR2(1) NOT NULL,
+    nombre_tipo_camion VARCHAR2(40) NOT NULL
+);
+
+ALTER TABLE tipo_camion ADD CONSTRAINT pk_tipo_camion PRIMARY KEY ( id_tipo_camion );
+
+CREATE TABLE tipo_cliente (
+    id_tipo_cli     VARCHAR2(1) NOT NULL,
+    nombre_tipo_cli VARCHAR2(15) NOT NULL
+);
+
+ALTER TABLE tipo_cliente ADD CONSTRAINT pk_tipo_cliente PRIMARY KEY ( id_tipo_cli );
+
+CREATE TABLE tipo_salud (
+    id_tipo_sal VARCHAR2(3) NOT NULL,
+    descripcion VARCHAR2(100) NOT NULL,
+    pct_sueldo  NUMBER(3, 1) NOT NULL
+);
+
+ALTER TABLE tipo_salud ADD CONSTRAINT pk_tipo_salud PRIMARY KEY ( id_tipo_sal );
+
+ALTER TABLE arriendo_camion
+    ADD CONSTRAINT fk_arriendocamion_cliente FOREIGN KEY ( numrun_cli )
+        REFERENCES cliente ( numrun_cli );
+
+ALTER TABLE camion
+    ADD CONSTRAINT fk_camion_tipo_camion_fk FOREIGN KEY ( id_tipo_camion )
+        REFERENCES tipo_camion ( id_tipo_camion );
+
+ALTER TABLE cliente
+    ADD CONSTRAINT fk_cliente_tipocliente FOREIGN KEY ( id_tipo_cli )
+        REFERENCES tipo_cliente ( id_tipo_cli );
+
+ALTER TABLE empleado
+    ADD CONSTRAINT fk_empleado_estado_civil FOREIGN KEY ( id_estado_civil )
+        REFERENCES estado_civil ( id_estado_civil );
+
+ALTER TABLE empleado
+    ADD CONSTRAINT fk_empleado_tipo_salud FOREIGN KEY ( id_tipo_sal )
+        REFERENCES tipo_salud ( id_tipo_sal );
+
+
+-- FIN SCRIPT BASE        
+ALTER TABLE empleado ADD CONSTRAINT pk_empleado PRIMARY KEY ( numrun_emp );
+     
+ALTER TABLE camion ADD CONSTRAINT pk_camion PRIMARY KEY ( nro_patente );    
+
+ALTER TABLE camion
+    ADD CONSTRAINT fk_camion_marca FOREIGN KEY ( id_marca )
+        REFERENCES marca ( id_marca );
+        
+ALTER TABLE camion
+    ADD CONSTRAINT fk_camion_empleado FOREIGN KEY ( numrun_emp )
+        REFERENCES empleado ( numrun_emp );
+
+ALTER TABLE empleado
+    ADD CONSTRAINT fk_empleado_comuna FOREIGN KEY ( id_comuna )
+        REFERENCES comuna ( id_comuna );
+
+ALTER TABLE cliente
+    ADD CONSTRAINT fk_cliente_comuna FOREIGN KEY ( id_comuna )
+        REFERENCES comuna ( id_comuna );
+
+ALTER TABLE cliente
+    ADD CONSTRAINT fk_cliente_estadocivil FOREIGN KEY ( id_estado_civil )
+        REFERENCES estado_civil ( id_estado_civil );
+
+ALTER TABLE arriendo_camion
+    ADD CONSTRAINT fk_arriendocamion_camion FOREIGN KEY ( nro_patente )
+        REFERENCES camion ( nro_patente );
+-- fin CLAVES PRIMARIAS Y FORANEAS
+
+-- poblar tablas
+INSERT INTO marca VALUES(1,'Scania');
+INSERT INTO marca VALUES(2,'Man');
+INSERT INTO marca VALUES(3,'Mercedes-Benz');
+INSERT INTO marca VALUES (4, 'Volvo');
+INSERT INTO marca VALUES (5, 'DAF');
+INSERT INTO marca VALUES (6, 'Iveco');
+INSERT INTO marca VALUES (7, 'Kenworth');
+INSERT INTO marca VALUES (8, 'Freightliner');
+INSERT INTO marca VALUES (9, 'Peterbilt');
+INSERT INTO marca VALUES (10, 'Mack');
+
+INSERT INTO tipo_camion VALUES(1,'Camiones rígidos');
+INSERT INTO tipo_camion VALUES(2,'Camiones articulados');
+INSERT INTO tipo_camion VALUES(3,'Tráilers');
+INSERT INTO tipo_camion VALUES (4, 'Camiones cisterna');
+INSERT INTO tipo_camion VALUES (5, 'Camiones frigoríficos');
+INSERT INTO tipo_camion VALUES (6, 'Camiones de volteo');
+INSERT INTO tipo_camion VALUES (7, 'Camiones grúa');
+INSERT INTO tipo_camion VALUES (8, 'Camiones portavehículos');
+INSERT INTO tipo_camion VALUES (9, 'Camiones de carga seca');
+
+
+--crear secuencia
+CREATE SEQUENCE SEQ_ESTCIVIL
+INCREMENT BY 5
+START WITH 10;
+
+INSERT INTO estado_civil VALUES(SEQ_ESTCIVIL.NEXtVAL,'Casado');
+INSERT INTO estado_civil VALUES(SEQ_ESTCIVIL.NEXtVAL,'Soltero');
+INSERT INTO estado_civil VALUES(SEQ_ESTCIVIL.NEXtVAL,'Divorciado');
+INSERT INTO estado_civil VALUES (SEQ_ESTCIVIL.NEXTVAL, 'Viudo');
+INSERT INTO estado_civil VALUES (SEQ_ESTCIVIL.NEXTVAL, 'Separado');
+INSERT INTO estado_civil VALUES (SEQ_ESTCIVIL.NEXTVAL, 'En pareja');
+INSERT INTO estado_civil VALUES (SEQ_ESTCIVIL.NEXTVAL, 'Unión civil');
+INSERT INTO estado_civil VALUES (SEQ_ESTCIVIL.NEXTVAL, 'Soltero/a sin hijos');
+INSERT INTO estado_civil VALUES (SEQ_ESTCIVIL.NEXTVAL, 'Casado/a con hijos');
+INSERT INTO estado_civil VALUES (SEQ_ESTCIVIL.NEXTVAL, 'Divorciado/a con hijos');
+
+INSERT INTO comuna VALUES(1,'Puerto Montt');
+INSERT INTO comuna VALUES(2,'Puerto Varas');
+INSERT INTO comuna VALUES(3,'Los Muermos');
+INSERT INTO comuna VALUES (4, 'Frutillar');
+INSERT INTO comuna VALUES (5, 'Llanquihue');
+INSERT INTO comuna VALUES (6, 'Ancud');
+INSERT INTO comuna VALUES (7, 'Castro');
+INSERT INTO comuna VALUES (8, 'Quellón');
+INSERT INTO comuna VALUES (9, 'Chonchi');
+INSERT INTO comuna VALUES (10, 'Calbuco');
+
+-- trabajo clases
+--Tipo_salud
+
+CREATE SEQUENCE SEQ_TSALUD
+INCREMENT BY 1
+START WITH 1;//Secuencia que comienza en 1 y aumenta de 1 en 1
+
+SELECT SEQ_TSALUD.NEXTVAl FROM Dual;//Establece el numero inicial para la secuencia
+SELECT SEQ_TSALUD.CURRVAL FROM Dual;//Muestra el nùmero actual de la secuencia
+
+
+INSERT INTO tipo_salud VALUES (SEQ_TSALUD.NEXTVAL,'ISAPRE',1);//Insertar datos en la tabla tipo_salud sin dar id pues se lo da la secuencia
+INSERT INTO tipo_salud VALUES (SEQ_TSALUD.NEXTVAL,'FONASA',10);
+INSERT INTO tipo_salud VALUES (SEQ_TSALUD.NEXTVAL,'FUERZAS ARMADAS',9);
+INSERT INTO tipo_salud VALUES (SEQ_TSALUD.NEXTVAL, 'Particular', 5);
+INSERT INTO tipo_salud VALUES (SEQ_TSALUD.NEXTVAL, 'Seguro internacional', 7);
+INSERT INTO tipo_salud VALUES (SEQ_TSALUD.NEXTVAL, 'FONASA Nivel 1', 2);
+INSERT INTO tipo_salud VALUES (SEQ_TSALUD.NEXTVAL, 'FONASA Nivel 2', 3);
+INSERT INTO tipo_salud VALUES (SEQ_TSALUD.NEXTVAL, 'FONASA Nivel 3', 4);
+INSERT INTO tipo_salud VALUES (SEQ_TSALUD.NEXTVAL, 'ISAPRE Preferencial', 12);
+INSERT INTO tipo_salud VALUES (SEQ_TSALUD.NEXTVAL, 'ISAPRE Estándar', 6);
+
+SELECT * FROM tipo_salud;
+
+
+-- tipo de cliente
+CREATE SEQUENCE SEQ_TCLIENTE
+INCREMENT BY 1
+START WITH 1;
+
+INSERT INTO tipo_cliente (id_tipo_cli, nombre_tipo_cli) VALUES (SEQ_TCLIENTE.NEXTVAL,'cliente_empresa');
+INSERT INTO tipo_cliente (id_tipo_cli, nombre_tipo_cli) VALUES (SEQ_TCLIENTE.NEXTVAL,'cliente_natural');
+INSERT INTO tipo_cliente (id_tipo_cli, nombre_tipo_cli) VALUES (SEQ_TCLIENTE.NEXTVAL,'VIP');
+INSERT INTO tipo_cliente VALUES (SEQ_TCLIENTE.NEXTVAL, 'Corporativo');
+INSERT INTO tipo_cliente VALUES (SEQ_TCLIENTE.NEXTVAL, 'Minorista');
+INSERT INTO tipo_cliente VALUES (SEQ_TCLIENTE.NEXTVAL, 'Mayorista');
+INSERT INTO tipo_cliente VALUES (SEQ_TCLIENTE.NEXTVAL, 'Estándar');
+INSERT INTO tipo_cliente VALUES (SEQ_TCLIENTE.NEXTVAL, 'Estudiante');
+INSERT INTO tipo_cliente VALUES (SEQ_TCLIENTE.NEXTVAL, 'Adulto mayor');
+
+
+
+
+-- CLIENTE
+
+
+INSERT INTO cliente VALUES(19070702,'4','Oyarzun','Montiel','Ismael','Ignacio','Puyencho s/n','954151823','0','9999999','23-12-1995',3,'2',10);
+INSERT INTO cliente VALUES(21843139,'9','Muñoz','Sagardia','Diego','Andres','Alto la palota','953195369','0','9999999','19-05-2005',1,'2',15);
+INSERT INTO cliente VALUES(12345678,'9','Perez','Retamal','Pepito','Papucho','Los nostros 69','9123456789','0','100000','22-04-2000',2,'3',10);
+INSERT INTO cliente VALUES (18012345, '2', 'Gómez', 'Rojas', 'Juan', 'Carlos', 'Calle Norte 123', '912345678', '0', 800000, '10-12-1990', 4, '1', 10);
+INSERT INTO cliente VALUES (17654321, '5', 'Salas', 'Pérez', 'María', NULL, 'Avenida Central 456', '987654321', '0', 900000, '05-08-1988', 5, '2', 15);
+
+-- empleado 
+INSERT INTO empleado VALUES(123456789,'k','Vargas','Rogel','Rodrigo','Alejandro','Avenida desconocida 123','M',123123123,562123123,'20-03-1999','06-03-2024',450000,1,'2',10);
+INSERT INTO empleado VALUES (987654321, '1', 'Martínez', 'López', 'José', 'Luis', 'Ruta 5 Sur', 'M', 912345678, '562987654', '15-01-1980', '20-02-2010', 500000, 6, '3', 20);
+INSERT INTO empleado VALUES (111223344, '7', 'Hernández', 'Fuentes', 'Carlos', 'Andrés', 'Calle Principal 101', 'M', 987654321, 562876543, '15-04-1990', '01-06-2015', 550000, 4, '3', 10);
+INSERT INTO empleado VALUES (222334455, '5', 'González', 'Pérez', 'Lucía', 'María', 'Avenida Siempreviva 742', 'F', 987654322, 562876544, '20-09-1985', '10-12-2010', 600000, 5, '2', 15);
+INSERT INTO empleado VALUES (333445566, '2', 'Ramírez', 'Díaz', 'Javier', 'Alejandro', 'Camino Real 88', 'M', 987654323, 562876545, '25-03-1988', '15-08-2012', 580000, 6, '3', 20);
+INSERT INTO empleado VALUES (444556677, '8', 'Fernández', 'Lopez', 'Marta', 'Isabel', 'Villa Alegre 123', 'F', 987654324, 562876546, '05-01-1993', '20-11-2018', 530000, 7, '4', 25);
+INSERT INTO empleado VALUES (555667788, '3', 'Martínez', 'Morales', 'Luis', 'Eduardo', 'Calle Los Robles 45', 'M', 987654325, 562876547, '10-07-1987', '01-03-2014', 620000, 8, '2', 10);
+-- fin trabajo clases
+
+-- camion
+
+INSERT INTO camion VALUES('ASD123','Blanco','GasLP',2014,100000,10000,'1',123456789,1);
+INSERT INTO camion VALUES ('DEF456', 'Rojo', 'Die', 2018, 120000, 15000, '3', 987654321, 2);
+INSERT INTO camion VALUES ('JKL789', 'Azul', 'Die', 2020, 150000, 20000, '1', 123456789, 1);
+INSERT INTO camion VALUES ('MNO123', 'Negro', 'Gas', 2019, 120000, 18000, '2', 987654321, 2);
+INSERT INTO camion VALUES ('PQR456', 'Blanco', 'Eléc', 2021, 200000, 25000, '3', 333445566, 3);
+INSERT INTO camion VALUES ('STU789', 'Verde', 'Híb', 2022, 180000, 22000, '2', 333445566, 1);
+INSERT INTO camion VALUES ('VWX123', 'Gris', 'Die', 2018, 140000, 19000, '1', 111223344, 2);
+INSERT INTO camion VALUES ('YZA456', 'Rojo', 'Gas', 2020, 170000, 21000, '3', 111223344, 3);
+INSERT INTO camion VALUES ('BCD789', 'Amarillo', 'Die', 2017, 110000, 16000, '2', 555667788, 1);
+
+
+
+INSERT INTO arriendo_camion VALUES (11, 'DEF456', 19070702, '15-11-2024', 3, '18-11-2024');
+INSERT INTO arriendo_camion VALUES (1, 'JKL789', 19070702, '01-11-2024', 5, '06-11-2024');
+INSERT INTO arriendo_camion VALUES (2, 'MNO123', 19070702, '02-11-2024', 3, '05-11-2024');
+INSERT INTO arriendo_camion VALUES (3, 'PQR456', 19070702, '03-11-2024', 7, '10-11-2024');
+INSERT INTO arriendo_camion VALUES (4, 'STU789', 21843139, '04-11-2024', 4, '08-11-2024');
+INSERT INTO arriendo_camion VALUES (5, 'VWX123', 21843139, '05-11-2024', 6, '11-11-2024');
+INSERT INTO arriendo_camion VALUES (6, 'YZA456', 21843139, '06-11-2024', 2, '08-11-2024');
+INSERT INTO arriendo_camion VALUES (7, 'BCD789', 21843139, '07-11-2024', 8, '15-11-2024');
+INSERT INTO arriendo_camion VALUES (8, 'JKL789', 12345678, '08-11-2024', 10, '18-11-2024');
+INSERT INTO arriendo_camion VALUES (9, 'MNO123', 12345678, '09-11-2024', 9, '18-11-2024');
+INSERT INTO arriendo_camion VALUES (10, 'PQR456', 12345678, '10-11-2024', 3, '13-11-2024');
