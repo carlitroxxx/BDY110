@@ -18,3 +18,9 @@ alter USER BDY110_P1 IDENTIFIED BY "BDY110_carlos";
 /*BDY110_P1*/
 /*Contraseña*/
 /*BDY110_carlos*/
+
+
+/*LOGIN ADMIN*/
+/*admin*/
+/*CONTRASEÑA*/
+/*206253282Zer*/
