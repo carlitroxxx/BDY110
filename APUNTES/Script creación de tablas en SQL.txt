@@ -1,0 +1,131 @@
+DROP TABLE escuela_director CASCADE CONSTRAINTS;
+DROP TABLE escuela_recinto_recinto_deportivo CASCADE CONSTRAINTS;
+DROP TABLE profesor_turno CASCADE CONSTRAINTS;
+
+DROP TABLE contrato CASCADE CONSTRAINTS;
+DROP TABLE profesor CASCADE CONSTRAINTS;
+DROP TABLE recinto_deportivo CASCADE CONSTRAINTS;
+DROP TABLE municipalidad CASCADE CONSTRAINTS;
+DROP TABLE director CASCADE CONSTRAINTS;
+DROP TABLE escuela CASCADE CONSTRAINTS;
+DROP TABLE deporte CASCADE CONSTRAINTS;
+DROP TABLE turno_trabajo CASCADE CONSTRAINTS;
+
+
+
+
+
+
+CREATE TABLE director (
+    rut VARCHAR2(13) NOT NULL PRIMARY KEY,
+    pnombre VARCHAR2(20) NOT NULL,
+    papellido VARCHAR2(20) NOT NULL
+);
+
+CREATE TABLE deporte (
+    id_deporte NUMBER NOT NULL PRIMARY KEY,
+    nombre VARCHAR2(25) NOT NULL
+);
+
+CREATE TABLE escuela(
+    id_escuela NUMBER NOT NULL PRIMARY KEY,
+    nombre VARCHAR2(25) NOT NULL,
+    direccion VARCHAR2(50) NOT NULL
+);
+
+CREATE TABLE recinto_deportivo(
+    id_recinto_deportivo NUMBER NOT NULL PRIMARY KEY,
+    nombre VARCHAR2(35) NOT NULL,
+    direccion VARCHAR2(50) NOT NULL,
+    id_municipalidad NUMBER NOT NULL
+);
+
+CREATE TABLE turno_trabajo(
+    id_turno_trabajo NUMBER NOT NULL PRIMARY KEY,
+    hora_inicio DATE NOT NULL,
+    hora_fin DATE NOT NULL
+);
+CREATE TABLE profesor(
+    id_profesor NUMBER NOT NULL PRIMARY KEY,
+    pnombre VARCHAR2(25) NOT NULL,
+    papellido VARCHAR2(25) NOT NULL,
+    id_contrato NUMBER NOT NULL
+);
+CREATE TABLE contrato(
+    id_contrato NUMBER NOT NULL PRIMARY KEY,
+    tipo VARCHAR2(20) NOT NULL
+);
+
+CREATE TABLE municipalidad(
+    id_municipalidad NUMBER NOT NULL PRIMARY KEY,
+    nombre VARCHAR2(25) NOT NULL,
+    direccion VARCHAR2(25) NOT NULL
+);
+
+CREATE TABLE escuela_director(
+    fecha_inicio DATE NOT NULL,
+    fecha_termino DATE NOT NULL,
+    rut VARCHAR2(13) NOT NULL,
+    id_escuela NUMBER NOT NULL
+);
+
+CREATE TABLE escuela_recinto_recinto_deportivo(
+    id_escuela NUMBER NOT NULL,
+    id_recinto_deportivo NUMBER NOT NULL,
+    id_deporte NUMBER NOT NULL,
+    id_turno_trabajo NUMBER NOT NULL
+);
+
+CREATE TABLE profesor_turno(
+    id_turno_trabajo NUMBER NOT NULL,
+    id_escuela NUMBER NOT NULL,
+    id_profesor NUMBER NOT NULL
+);
+
+ALTER TABLE escuela_director ADD CONSTRAINT pk_escuela_director PRIMARY KEY(rut,id_escuela);
+
+ALTER TABLE escuela_director ADD CONSTRAINT fk_escuela_director_escuela FOREIGN KEY(id_escuela)
+    REFERENCES escuela(id_escuela);
+    
+ALTER TABLE escuela_director ADD CONSTRAINT fk_escuela_director_director FOREIGN KEY(rut)
+    REFERENCES director(rut);
+    
+    
+ALTER TABLE profesor_turno ADD CONSTRAINT pk_profesor_turno PRIMARY KEY(id_turno_trabajo,id_escuela,id_profesor);    
+
+ALTER TABLE profesor_turno ADD CONSTRAINT fk_profesor_turno_escuela FOREIGN KEY(id_escuela)
+    REFERENCES escuela(id_escuela);
+    
+ALTER TABLE profesor_turno ADD CONSTRAINT fk_profesor_turno_turno FOREIGN KEY(id_turno_trabajo)
+    REFERENCES turno_trabajo(id_turno_trabajo);
+    
+ALTER TABLE profesor_turno ADD CONSTRAINT fk_profesor_turno_profesor FOREIGN KEY(id_profesor)
+    REFERENCES profesor(id_profesor);
+
+
+ALTER TABLE escuela_recinto_recinto_deportivo ADD CONSTRAINT pk_escuela_recinto_recinto_deportivo PRIMARY KEY(id_escuela,id_recinto_deportivo,id_deporte,id_turno_trabajo);
+
+ALTER TABLE escuela_recinto_recinto_deportivo ADD CONSTRAINT fk_escuela_recinto_recinto_deportivo_escuela FOREIGN KEY(id_escuela)
+    REFERENCES escuela(id_escuela);
+    
+ALTER TABLE escuela_recinto_recinto_deportivo ADD CONSTRAINT fk_escuela_recinto_recinto_deportivo_deporte FOREIGN KEY(id_deporte)
+    REFERENCES deporte(id_deporte);
+    
+ALTER TABLE escuela_recinto_recinto_deportivo ADD CONSTRAINT fk_escuela_recinto_recinto_deportivo_recinto FOREIGN KEY(id_recinto_deportivo)
+    REFERENCES recinto_deportivo(id_recinto_deportivo);
+    
+ALTER TABLE escuela_recinto_recinto_deportivo ADD CONSTRAINT fk_escuela_recinto_recinto_deportivo_turno_trabajo FOREIGN KEY(id_turno_trabajo)
+    REFERENCES turno_trabajo(id_turno_trabajo);
+    
+ALTER TABLE recinto_deportivo ADD CONSTRAINT fk_recinto_deportivo_municipalidad FOREIGN KEY (id_municipalidad)
+    REFERENCES municipalidad(id_municipalidad);
+    
+
+ALTER TABLE profesor ADD CONSTRAINT fk_profesor_contrato FOREIGN KEY (id_contrato)
+    REFERENCES contrato(id_contrato);
+
+
+--No olvidar hacer commit al finalizar o no se guarda nada para el APEX--
+
+COMMIT;
+    

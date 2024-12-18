@@ -1,0 +1,19 @@
+Tablas Iniciales:
+-DIRECTOR (#*rut,*dv,*pnombre,*papellido) Director a escuela director (M:1)
+-ESCUELA (#*id,*nombre,*direccion) Escuela director a Escuela (1:M)
+Escuela a Profesor_turno (M:1)
+Escuela a Escuela_recinto_recinto_deportivo (M:1)
+-DEPORTE (#*id,*nombre) Escuela_recinto_recinto_deportivo a Deporte (1:M)
+-RECINTO_DEPORTIVO (#*id,*nombre,*direccion) Recinto_deportivo a Municipalidad (M:1)
+Recinto_deportivo a Escuela_recinto_recinto_deportivo (M:1)
+-PROFESOR (#*id,*pnombre,*papellido) Profesor a contrato (M:1)
+Profesor a profesor_turno (M:1)
+-CONTRATO (#*id,*tipo) Contrato a profesor (1:M)
+-TURNO_TRABAJO (#*id,*hora_inicio,*hora_fin) turno_trabajo a profesor_turno (M:1)
+turno_trabajo a Escuela_recinto_recinto_deportivo (M:1)
+-MUNICIPALIDAD (#*id,*nombre,*direccion) Municipalidad a recinto_deportivo (1:M)
+
+Tablas que surgen de relaciones muchos a muchos
+-ESCUELA_DIRECTOR (*id_director,*id_escuela,*fecha_inicio,*fecha_termino)
+-PROFESOR_TURNO (*id_turno,*id_escuela,*id_profesor)
+-ESCUELA_RECINTO_RECINTO_DEPORTIVO (*id_escuela,*id_recinto,*id_deporte,*id_turno)

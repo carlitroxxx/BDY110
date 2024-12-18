@@ -1,0 +1,31 @@
+SELECT X(Atributo que queremos) FROM x(Tabla de la que queremos el atributo) ORDER BY x(De a cuerdo a lo que queramos ordenar) DESC -> El desc ordena de mayor a menor
+
+ORACLE APEX
+1.- Ingresamos a Oracle cloud
+2.- 3 rayas a la izq que nos da una barra de opciones
+3.- ORACLE DATABASE -> Autonomous Database
+4.- Seleccionamos la base de datos actual
+5.- Bajamos y buscamos donde diga APEX instance
+6.- Launch APEX
+7.- Ingresamos con la constraseña del user admin  (contraAdmin)
+8.- Create Workspace
+9.- Existing Schema
+10.- Seleccionamos el usuario que estabamos usando
+11.- Create workspace
+12.- Cerramos sesion
+13.- Iniciamos sesion con el usuario trabajado
+14.- SQL Workshop -> Objet browser
+15.- En tables buscamos la tabla de la primera query
+16.- More -> Create app
+17.- Create Application
+18.- Dashboard
+19.- Agregamos un chart al layout
+20.- En atributes seleccionamos el tipo de grafico que queremos
+21.- Source -> 
+	- Location -> Local Database
+	- Type -> SQL Query
+	- Sql Queery -> Pegamos la Query que nos interesa
+22.- Column Mapping ->
+	- Label -> 
+	- Value ->
+	En ambos ponemos lo que nos interesa
